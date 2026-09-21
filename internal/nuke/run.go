@@ -9,6 +9,8 @@ import (
 	"sort"
 	"strings"
 	"text/tabwriter"
+
+	"github.com/charlesonunze/nuke/internal/buildinfo"
 )
 
 func Run(ctx context.Context, sys System, args []string, in io.Reader, out io.Writer, errOut io.Writer) int {
@@ -23,6 +25,9 @@ func Run(ctx context.Context, sys System, args []string, in io.Reader, out io.Wr
 	}
 
 	switch cfg.Command {
+	case CommandVersion:
+		fmt.Fprintln(out, buildinfo.String())
+		return 0
 	case CommandPort:
 		return runPort(ctx, sys, cfg, in, out, errOut)
 	case CommandPID:

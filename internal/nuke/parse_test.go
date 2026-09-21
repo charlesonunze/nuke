@@ -83,6 +83,44 @@ func TestParsePID(t *testing.T) {
 	}
 }
 
+func TestParseVersion(t *testing.T) {
+	tests := []struct {
+		name string
+		args []string
+	}{
+		{name: "short flag", args: []string{"-v"}},
+		{name: "command", args: []string{"version"}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Parse(tt.args)
+			if err != nil {
+				t.Fatalf("Parse() error = %v", err)
+			}
+			assertConfig(t, got, Config{Command: CommandVersion})
+		})
+	}
+}
+
+func TestParseRejectsInvalidVersionForms(t *testing.T) {
+	tests := [][]string{
+		{"-v", "extra"},
+		{"version", "extra"},
+		{"--version"},
+	}
+
+	for _, args := range tests {
+		t.Run(joinArgs(args), func(t *testing.T) {
+			_, err := Parse(args)
+			var usageErr UsageError
+			if !errors.As(err, &usageErr) {
+				t.Fatalf("Parse() error = %T %v, want UsageError", err, err)
+			}
+		})
+	}
+}
+
 func TestParseRejectsMixedTargetModes(t *testing.T) {
 	tests := [][]string{
 		{"port", "3000", "-r", "4000-5000"},

@@ -3,6 +3,9 @@ package nuke
 const usageText = `nuke kills processes by port, pid, or process name.
 
 Usage:
+  nuke -v
+  nuke version
+
   nuke port <port> [port...] [--force] [--dry-run] [--yes]
   nuke port -r <start-end> [--force] [--dry-run] [--yes]
   nuke port --range <start-end> [--force] [--dry-run] [--yes]

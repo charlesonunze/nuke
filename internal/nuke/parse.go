@@ -22,6 +22,11 @@ func Parse(args []string) (Config, error) {
 	switch args[0] {
 	case "help", "-h", "--help":
 		return Config{Help: true}, nil
+	case string(CommandVersion), "-v":
+		if len(args) != 1 {
+			return Config{}, usageErrorf("%s does not accept arguments", args[0])
+		}
+		return Config{Command: CommandVersion}, nil
 	case string(CommandPort):
 		return parsePort(args[1:])
 	case string(CommandPID):

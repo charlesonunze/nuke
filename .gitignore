@@ -3,6 +3,7 @@
 #
 # Binaries for programs and plugins
 /nuke
+/dist/
 *.exe
 *.exe~
 *.dll
