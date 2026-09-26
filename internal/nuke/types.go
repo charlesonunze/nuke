@@ -5,8 +5,9 @@ import "context"
 type Command string
 
 const (
-	CommandPort Command = "port"
-	CommandPID  Command = "pid"
+	CommandPort    Command = "port"
+	CommandPID     Command = "pid"
+	CommandVersion Command = "version"
 )
 
 type PortMode int

@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goreleaser/goreleaser/v2.18.2/www/static/schema.json
+version: 2
+
+project_name: nuke
+
+builds:
+  - id: nuke
+    main: .
+    binary: nuke
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - >-
+        -s -w
+        -X github.com/charlesonunze/nuke/internal/buildinfo.version={{ .Version }}
+        -X github.com/charlesonunze/nuke/internal/buildinfo.commit={{ .Commit }}
+        -X github.com/charlesonunze/nuke/internal/buildinfo.date={{ .Date }}
+
+archives:
+  - id: archives
+    ids:
+      - nuke
+    formats:
+      - tar.gz
+    name_template: "nuke_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+sboms:
+  - id: archives
+    artifacts: archive
+
+signs:
+  - cmd: cosign
+    signature: "${artifact}.sigstore.json"
+    args:
+      - sign-blob
+      - "--bundle=${signature}"
+      - "${artifact}"
+      - --yes
+    artifacts: checksum
+
+changelog:
+  use: git
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"

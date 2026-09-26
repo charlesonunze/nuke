@@ -9,6 +9,22 @@ import (
 	"testing"
 )
 
+func TestRunVersion(t *testing.T) {
+	for _, args := range [][]string{{"-v"}, {"version"}} {
+		t.Run(joinArgs(args), func(t *testing.T) {
+			var out bytes.Buffer
+			code := Run(context.Background(), nil, args, strings.NewReader(""), &out, &bytes.Buffer{})
+
+			if code != 0 {
+				t.Fatalf("Run() code = %d, want 0", code)
+			}
+			if !strings.HasPrefix(out.String(), "nuke ") {
+				t.Fatalf("output = %q, want version output", out.String())
+			}
+		})
+	}
+}
+
 func TestRunPIDNamePromptsAndDeclinesByDefault(t *testing.T) {
 	sys := &fakeSystem{
 		processes: []Process{
