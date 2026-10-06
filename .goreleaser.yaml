@@ -42,6 +42,24 @@ sboms:
   - id: archives
     artifacts: archive
 
+homebrew_casks:
+  - name: nuke
+    ids:
+      - archives
+    binaries:
+      - nuke
+    homepage: https://github.com/charlesonunze/nuke
+    description: Terminate local processes by port, PID, or process name
+    skip_upload: auto
+    repository:
+      owner: charlesonunze
+      name: homebrew-tap
+      branch: main
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    commit_author:
+      name: github-actions[bot]
+      email: 41898282+github-actions[bot]@users.noreply.github.com
+
 signs:
   - cmd: cosign
     signature: "${artifact}.sigstore.json"
