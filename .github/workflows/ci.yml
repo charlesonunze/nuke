@@ -55,3 +55,6 @@ jobs:
           distribution: goreleaser
           version: v2.18.2
           args: release --snapshot --clean --skip=sign
+
+      - name: Verify Homebrew cask
+        run: test -f dist/homebrew/Casks/nuke.rb
