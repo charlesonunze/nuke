@@ -1,0 +1,25 @@
+class Nuke < Formula
+  desc "Terminate local processes by port, PID, or process name"
+  homepage "https://github.com/charlesonunze/nuke"
+  url "https://github.com/charlesonunze/nuke/archive/refs/tags/v__VERSION__.tar.gz"
+  sha256 "__SHA256__"
+  license "MIT"
+
+  depends_on "go" => :build
+
+  def install
+    ldflags = %W[
+      -X github.com/charlesonunze/nuke/internal/buildinfo.version=#{version}
+      -X github.com/charlesonunze/nuke/internal/buildinfo.commit=__COMMIT__
+      -X github.com/charlesonunze/nuke/internal/buildinfo.date=__DATE__
+    ]
+
+    system "go", "build", *std_go_args(ldflags: ldflags)
+  end
+
+  test do
+    assert_match "nuke #{version}", shell_output("#{bin}/nuke version")
+    assert_match "no processes found for pid 2147483647",
+                 shell_output("#{bin}/nuke pid 2147483647")
+  end
+end
