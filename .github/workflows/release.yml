@@ -44,11 +44,6 @@ jobs:
       - name: Install Cosign
         uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22 # v4.1.0
 
-      - name: Verify Homebrew tap token
-        env:
-          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-        run: test -n "$HOMEBREW_TAP_TOKEN"
-
       - name: Release
         uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7
         with:
@@ -57,6 +52,22 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  homebrew:
+    needs: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify Homebrew tap token
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: test -n "$HOMEBREW_TAP_TOKEN"
 
       - name: Prepare Homebrew formula
         run: |
@@ -104,5 +115,5 @@ jobs:
             exit 0
           fi
 
-          git -C homebrew-tap commit -m "nuke ${GITHUB_REF_NAME}"
+          git -C homebrew-tap commit -m "chore: publish nuke ${GITHUB_REF_NAME}"
           git -C homebrew-tap push origin HEAD:main
