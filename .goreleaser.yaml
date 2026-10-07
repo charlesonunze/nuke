@@ -52,6 +52,9 @@ signs:
       - --yes
     artifacts: checksum
 
+release:
+  replace_existing_artifacts: true
+
 changelog:
   use: git
   filters:
